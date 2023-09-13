@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SMS Link Example</title>
+  </head>
+  <body>
+    <button id="send-sms">Send SMS</button>
+
+    <script>
+      const button = document.getElementById("send-sms");
+      const phoneNumber = "7222976619";
+      const message = "Hello, World!";
+
+      button.addEventListener("click", () => {
+        if ("contacts" in navigator) {
+          navigator.contacts.select(['phoneNumbers'], { multiple: false })
+            .then(contacts => {
+              if (contacts.length > 0) {
+                const contact = contacts[0];
+                const phone = contact.phoneNumbers[0];
+                const contactPhoneNumber = phone.value;
+                const link = document.createElement("a");
+                link.href = `sms:${contactPhoneNumber}?body=${encodeURIComponent(message)}`;
+                link.click();
+              } else {
+                alert("No contacts found.");
+              }
+            })
+            .catch(error => {
+              console.error("Error selecting contact: ", error);
+            });
+        } else {
+          alert("Contacts API not supported.");
+        }
+      });
+    </script>
+  </body>
+</html>
